@@ -1,7 +1,6 @@
 from fastapi import FastAPI,Query, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from parser.ocr import extract_text_from_file
-from parser.extractor import extract_fields
+from parser.ocr import extract_text_from_file,extract_text_from_pdf,extract_fields 
 from crud import save_to_db, search_receipts, get_all_receipts, get_aggregates
 from algorithms.search import keyword_search, range_search, pattern_search
 from algorithms.sort import sort_data
@@ -47,19 +46,23 @@ async def upload_receipt(file: UploadFile = File(...)):
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-        # Handle both image and PDF parsing
+        # OCR: Handle PDF and image separately
         if file.content_type == "application/pdf":
-            from parser.ocr import extract_text_from_pdf
             text = extract_text_from_pdf(file_path)
         else:
             text = extract_text_from_file(file_path)
 
+        # Extract structured fields from raw text
         receipt_data = extract_fields(text)
+        print(receipt_data)
+        # Save to database or CSV
         save_to_db(receipt_data)
+
         return receipt_data
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
+
 
 def receipt_to_dict(receipt):
     return {
