@@ -36,9 +36,9 @@ receipt-dashboard/
 │   ├── uploads/                # Stores uploaded files temporarily
 │   ├── crud.py                 # DB CRUD operations
 │   ├── database.py             # SQLAlchemy models and DB config
-│   ├── models.py               # DB schema definitions (if any)
+│   ├── models.py               # DB schema definitions
 │   ├── main.py                 # FastAPI entry point
-│   ├── receipts.db             # SQLite database file (dev only)
+│   ├── receipts.db             # SQLite database file 
 │   ├── requirements.txt        # Backend dependencies
 │
 ├── frontend/
